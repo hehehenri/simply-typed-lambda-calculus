@@ -1,9 +1,13 @@
 module Context : module type of Map.Make(String)
 
+type typ =
+  | TAbs of typ * typ
+  | TInt
+
 type expr =
   | Int of int
   | Var of string
-  | Abs of string * expr
+  | Abs of string * typ * expr
   | App of expr * expr
 
 type value =

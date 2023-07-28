@@ -1,8 +1,4 @@
-module Context = Map.Make(String)
-
-type typ =
-  | TAbs of typ * typ
-  | TInt
+open Ast
 
 let rec eq a_typ b_typ =
   match (a_typ, b_typ) with
@@ -22,11 +18,10 @@ let rec infer context expr =
     (match Context.find_opt name context with
     | Some typ -> typ
     | None -> failwith "type_error: variable not found")
-  | Ast.Abs (param, body) ->
-    (match Context.find_opt param context with
-      | Some(t_param) -> let t_body = infer context body in
-        TAbs (t_param, t_body)
-      | None -> failwith "type_error: variable not found")
+  | Ast.Abs (param, param_typ, body) ->
+    let context = Context.add param param_typ context in
+    let b_typ = infer context body in
+    TAbs(param_typ, b_typ)
   | Ast.App (l_expr, r_expr) ->
       (match infer context l_expr with
       | TAbs (t_arg, t_body) ->

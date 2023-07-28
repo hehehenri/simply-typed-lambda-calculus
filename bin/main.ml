@@ -1,12 +1,12 @@
 open Lambda_calculus
+open Ast
 
 let ast = Ast.(App(Var("print"), Int(5)))
 
 let t_context =
-  Infer.(
   let context = Context.empty in
   let print = TAbs(TInt, TInt) in
-  Context.add "print" print context)
+  Context.add "print" print context
 
 let v_context = 
   Ast.(
@@ -21,6 +21,6 @@ let v_context =
 
   Context.add "print" print context)
 
-let _infer = Infer.infer t_context ast
+let _infer = Typ.infer t_context ast
 
 let _result = Ast.eval v_context ast
