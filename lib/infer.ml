@@ -19,11 +19,11 @@ let rec infer context expr =
   match expr with
   | Ast.Int _int -> TInt
   | Ast.Var name ->
-    (match Context.find name context with
+    (match Context.find_opt name context with
     | Some typ -> typ
     | None -> failwith "type_error: variable not found")
   | Ast.Abs (param, body) ->
-    (match Context.find param context with
+    (match Context.find_opt param context with
       | Some(t_param) -> let t_body = infer context body in
         TAbs (t_param, t_body)
       | None -> failwith "type_error: variable not found")
@@ -35,4 +35,3 @@ let rec infer context expr =
           | true -> t_body
           | false -> failwith (Printf.sprintf "type_error: this expression has type %s but an expression was expected of type %s" (to_string t_arg) (to_string t_param)))
       | TInt -> failwith "type_error: expecting abs got int")
-
